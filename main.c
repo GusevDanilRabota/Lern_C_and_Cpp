@@ -1,24 +1,27 @@
 #include "main.h"
 
-int main() {
-    vector v1 = {{1.0f, 2.0f, 3.0f}};
-    vector v2 = {{4.0f, 5.0f, 6.0f}};
-    vector v3 = {{7.0f, 8.0f, 9.0f}};
-    vector result = {0};
+int main(void) {
+    // Инициализация векторов с начальной и конечной точками
+    vector vector_1 = {
+        .id = 0x00,
+        .components_end={.x=1.0f, .y=2.0f, .z=3.0f},
+        .components_start={.x=0.0f, .y=0.0f, .z=0.0f}
+    };
+    vector vector_2 = {
+        .id = 0x01,
+        .components_end={.x=0.0f, .y=0.0f, .z=0.0f},
+        .components_start={.x=3.0f, .y=2.0f, .z=1.0f}
+    };
+    vector vector_result = {0}; // Вектор для хранения результата
 
-    // Сложение двух векторов
-    sum_vectors(&result, &v1, &v2, NULL);
-    printf("v1 + v2 = (%.2f, %.2f, %.2f)\n",
-           result.comnents.x, result.comnents.y, result.comnents.z);
+    sum_vectors(&vector_result, &vector_1, NULL);
+    show_vector(&vector_result);
 
-    // Сложение трех векторов
-    sum_vectors(&result, &v1, &v2, &v3, NULL);
-    printf("v1 + v2 + v3 = (%.2f, %.2f, %.2f)\n",
-           result.comnents.x, result.comnents.y, result.comnents.z);
+    sum_vectors(&vector_result, &vector_2, NULL);
+    show_vector(&vector_result);
 
-    // Сложение четырех векторов (включая сам результат)
-    sum_vectors(&result, &v1, &v2, &v3, &result, NULL);
-    printf("Сумма с предыдущим результатом = (%.2f, %.2f, %.2f)\n", result.comnents.x, result.comnents.y, result.comnents.z);
+    sum_vectors(&vector_result, &vector_1, &vector_2, NULL);
+    show_vector(&vector_result);
 
     return 0;
 }
@@ -28,30 +31,54 @@ __int8 sum_vectors(vector* result_vector, ...) {
         return -1; // Ошибка: result_vector не может быть NULL
     }
 
-    result_vector->comnents.x = 0.0f;
-    result_vector->comnents.y = 0.0f;
-    result_vector->comnents.z = 0.0f;
+    result_vector->id = 0xFF;
+    result_vector->components_start.x = result_vector->components_start.y = result_vector->components_start.z = 0.0f;
+    result_vector->components_end.x = result_vector->components_end.y = result_vector->components_end.z = 0.0f;
 
     va_list args;
     va_start(args, result_vector);
 
     // Читаем векторы пока не встретим NULL как указатель-терминатор
-    vector* current_vector;
+    vector* current_vector = NULL;
+    current_vector = va_arg(args, vector*);
+    while (current_vector != NULL) {
+        result_vector->components_end.x += (current_vector->components_end.x - current_vector->components_start.x);
+        result_vector->components_end.y += (current_vector->components_end.y - current_vector->components_start.y);
+        result_vector->components_end.z += (current_vector->components_end.z - current_vector->components_start.z);
 
-    while (1) {
-        // Явно получаем указатель
         current_vector = va_arg(args, vector*);
-
-        // Проверяем на NULL (завершающий маркер)
-        if (current_vector == NULL) {
-            break;
-        }
-
-        result_vector->comnents.x += current_vector->comnents.x;
-        result_vector->comnents.y += current_vector->comnents.y;
-        result_vector->comnents.z += current_vector->comnents.z;
     }
 
     va_end(args);
-    return 0; // Успех
+
+    return 0;
+}
+
+__int8 mul_vectors_vector(vector* composition, vector* multiplier_1, vector* multiplier_2) {
+    if (composition == NULL || multiplier_1 == NULL || multiplier_2 == NULL) {
+        return -1;
+    }
+
+    // ОПРЕДЕЛЕНИЕ ОРТОНОРМИРОВАННОГО БАЗИСА
+    __int8 orthonormal_basis = 0;
+
+    if (orthonormal_basis == 1) { // ПРАВЫЙ
+
+    } else if (orthonormal_basis == -1) { // ЛЕВЫЙ
+
+    }
+}
+
+__int8 mul_vectors_skolar(float composition, vector* multiplier_1, vector* multiplier_2) {
+
+}
+
+__int8 show_vector(vector* displayed_vector) {
+    printf("ID vector -> %d\n", displayed_vector->id);
+    printf("Component x -> %e\n", displayed_vector->components_end.x);
+    printf("Component y -> %e\n", displayed_vector->components_end.y);
+    printf("Component z -> %e\n", displayed_vector->components_end.z);
+    printf("\n");
+
+    return 0;
 }

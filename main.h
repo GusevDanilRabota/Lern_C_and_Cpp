@@ -11,10 +11,15 @@ typedef struct {
 } vector_components;
 
 typedef struct {
-    vector_components comnents;
+    __int64 id;
+    vector_components components_start;
+    vector_components components_end;
 } vector;
 
 
 __int8 sum_vectors(vector* result_vector, ...);
+__int8 mul_vectors_vector(vector* composition, vector* multiplier_1, vector* multiplier_2);
+__int8 mul_vectors_skolar(float composition, vector* multiplier_1, vector* multiplier_2);
+__int8 show_vector(vector* displayed_vector);
 
 #endif
