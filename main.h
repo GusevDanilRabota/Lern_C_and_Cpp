@@ -4,6 +4,8 @@
 #include "stdio.h"
 #include <stdarg.h>
 
+#define pass do{}while(0)
+
 typedef struct {
     float x;
     float y;
@@ -17,9 +19,9 @@ typedef struct {
 } vector;
 
 
-__int8 sum_vectors(vector* result_vector, ...);
-__int8 mul_vectors_vector(vector* composition, vector* multiplier_1, vector* multiplier_2);
-__int8 mul_vectors_skolar(float composition, vector* multiplier_1, vector* multiplier_2);
+__int8 sum_vectors(vector* sum_vector, int count, ...);
+__int8 mul_vectors_vector(vector* composition_vector, const vector* multiplier_1, const vector* multiplier_2);
+__int8 mul_vectors_skolar(float* composition_skolar, const vector* multiplier_1, const vector* multiplier_2);
 __int8 show_vector(vector* displayed_vector);
 
 #endif
